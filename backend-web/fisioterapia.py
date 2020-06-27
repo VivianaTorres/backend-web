@@ -74,35 +74,33 @@ def get_nombreRuta(codigo):
         con.close()
         print("Conexion cerrada")
 
-# Endpoint--Consulta por nombre del paciente enviado por el body 
+# Endpoint--Consulta por nombre completo del paciente enviado por el body 
 @app.route("/paciente/consultanombre", methods=['GET']) 
 def get_parametro():
     con = db.get_connection()
     Rehabilitacion = con.Rehabilitacion
     nombre = request.form['nombre']
+    Apellido = request.form['Apellido']
     
     try:
         pacientes = Rehabilitacion.pacientes
-        retorno = dumps(pacientes.find_one({"nombre":nombre}))
+        retorno = dumps(pacientes.find({"nombre":nombre,"Apellido":Apellido}))
         return jsonify(retorno)
     finally:
         con.close()
         print("Conexion cerrada")
 
-# Endpoint--Consulta para ver pacientes con determinada artroplastia 
-@app.route("/paciente/categoria", methods=['GET']) 
-def get_categoria():
+# Endpoint--Consulta de la cedula del paciente enviado por el body 
+@app.route("/paciente/consulta/cedula", methods=['GET']) 
+def get_Cedula():
     con = db.get_connection()
     Rehabilitacion = con.Rehabilitacion
-    tratamiento = request.form['tratamiento']
+    ced = request.form['cedula']
+    cedula = int(ced)
+    
     try:
         pacientes = Rehabilitacion.pacientes
-        #pacientes.create_index([('tratamiento', 'text')])
-        pacientes.create_index([('tratamiento', TEXT)])
-        print(tratamiento)
-        #retorno = dumps(pacientes.find({"tratamiento":tratamiento}))
-        retorno = dumps(pacientes.find({'$text': {'$search': tratamiento}}))
-        #retorno = dumps(pacientes.find({"tratamiento":{"$exists":tratamiento}}))
+        retorno = dumps(pacientes.find_one({"cedula":cedula}))
         return jsonify(retorno)
     finally:
         con.close()
